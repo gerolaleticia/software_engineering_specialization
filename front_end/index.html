@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <title>Projeto</title>
+</head>
+
+<body>
+     <!-- Cabeçalho de informações do sistema -->
+    <header>
+        <div class="title">
+            <h2>Previsão de ondas - Litoral Paulista</h2>
+        </div>
+        <div class="banner">
+            <img src="https://images.newscientist.com/wp-content/uploads/2020/09/16181027/credit_mohamed-khaki-eyeem-getty-images_web.jpg?crop=16:9,smart&width=1200&height=675&upscale=true"
+                alt="y">
+        </div>
+    </header>
+
+     <!-- Opções para adicionar uma nova previsão -->
+    <section class="newItem">
+        <input type="text" id="newPlace" placeholder="Adicionar praia:">
+        <input type="text" id="newDate" placeholder="Data:">
+        <input type="text" id="newSwell" placeholder="Ondulação:">
+        <input type="text" id="newWind" placeholder="Vento:">
+        <input type="text" id="newSize" placeholder="Tamanho previsto:">
+        <span onclick="newItem()" class="addBtn">Adicionar</span>
+    </section>
+
+    <!-- Tabela com items existentes -->
+    <section class="items">
+        <table id="myTable">
+            <tr>
+                <th>Local</th>
+                <th>Data</th>
+                <th>Ondulação</th>
+                <th>Vento</th>
+                <th>Tamanho previsto</th>
+                <th><img src="https://cdn-icons-png.flaticon.com/512/126/126468.png" width="15px" height="15px"></th>
+            </tr>
+        </table>
+    </section>
+
+    <script src="scripts.js"></script>
+</body>
+
+</html>
+
+
