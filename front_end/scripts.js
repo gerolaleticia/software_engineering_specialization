@@ -93,7 +93,7 @@ const getList = async () => {
   */
   const deleteItem = (item) => {
     console.log(item)
-    let url = 'http://127.0.0.1:5000/produto?nome=' + item;
+    let url = 'http://127.0.0.1:5000/previsao?nome=' + item;
     fetch(url, {
       method: 'delete'
     })
@@ -105,7 +105,7 @@ const getList = async () => {
   
   /*
     --------------------------------------------------------------------------------------
-    Função para adicionar nova previsão item com nome da praia, data, ondulação, vento e tamanho da onda 
+    Função para adicionar nova previsão com nome da praia, data, ondulação, vento e tamanho da onda 
     --------------------------------------------------------------------------------------
   */
   const newItem = () => {

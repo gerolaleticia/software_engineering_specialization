@@ -18,7 +18,7 @@ class PrevisaoSchema(BaseModel):
 class PrevisaoBuscaSchema(BaseModel):
     """ Define como deve ser a estrutura que representa a busca, que será feita apenas com o nome da praia
     """
-    nome: str = "Teste"
+    nome_praia: str = "Teste"
 
 
 class ListagemPrevisoesSchema(BaseModel):
@@ -28,8 +28,8 @@ class ListagemPrevisoesSchema(BaseModel):
 
 
 def apresenta_previsoes(previsoes: List[Previsao]):
-    """ Retorna uma representação do produto seguindo o schema definido em
-        ProdutoViewSchema.
+    """ Retorna uma representação da previsão seguindo o schema definido em
+        PrevisaoViewSchema.
     """
     result = []
     for previsao in previsoes:
@@ -48,12 +48,12 @@ class PrevisaoViewSchema(BaseModel):
     """ Define como uma previsão será retornada: previsão + comentário.
     """
     previsao_id: int = 1
-    nome_praia: Optional[int] = 12
-    data_previsao: Optional[int] = 12
-    ondulacao: Optional[int] = 12
-    vento: Optional[int] = 12
+    nome_praia: str = "Maresias"
+    data_previsao: Optional[str]
+    ondulacao: str = "sul"
+    vento: str = "leste"
     tamanho_onda: Optional[float] 
-    total_cometarios: int = 1
+    total_interacoes: Optional[int] 
     comentarios:List[InteracaoSchema]
 
 

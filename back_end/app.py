@@ -93,20 +93,20 @@ def get_produto(query: PrevisaoBuscaSchema):
 
     Retorna uma representação das previsões e comentários associados.
     """
-    previsao_id = query.previsao_id
-    logger.debug(f"Coletando dados sobre produto #{previsao_id}")
+    nome_praia = query.nome_praia
+    logger.debug(f"Coletando dados sobre a previsão #{nome_praia}")
     # criando conexão com a base
     session = Session()
     # fazendo a busca
-    previsao = session.query(Previsao).filter(Previsao.id == previsao_id).first()
+    previsao = session.query(Previsao).filter(Previsao.id == nome_praia).first()
 
     if not previsao:
         # se o produto não foi encontrado
         error_msg = "Previsao não encontrado na base :/"
-        logger.warning(f"Erro ao buscar previsao '{previsao_id}', {error_msg}")
+        logger.warning(f"Erro ao buscar previsao '{nome_praia}', {error_msg}")
         return {"mesage": error_msg}, 404
     else:
-        logger.debug(f"Produto econtrado: '{previsao.nome_praia}'")
+        logger.debug(f"Previsão encontrada: '{previsao.nome_praia}'")
         # retorna a representação de produto
         return apresenta_previsao(previsao), 200
 
@@ -146,7 +146,7 @@ def add_interacao(form: InteracaoSchema):
     Retorna uma representação das previsões e comentários associados.
     """
     previsao_id  = form.previsao_id
-    logger.debug(f"Adicionando interações ao produto #{previsao_id}")
+    logger.debug(f"Adicionando interações à previsão #{previsao_id}")
     # criando conexão com a base
     session = Session()
     # fazendo a busca pela previsao
@@ -166,7 +166,7 @@ def add_interacao(form: InteracaoSchema):
     previsao.adiciona_interacao(interacao)
     session.commit()
 
-    logger.debug(f"Adicionada interação ao produto #{previsao_id}")
+    logger.debug(f"Adicionada interação à previsão #{previsao_id}")
 
     # retorna a representação de produto
     return apresenta_previsao(previsao), 200
