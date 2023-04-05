@@ -1,85 +1,172 @@
-from flask import Flask, request, send_from_directory, render_template
+from flask_openapi3 import OpenAPI, Info, Tag
+from flask import redirect, render_template
+from urllib.parse import unquote
+
 from sqlalchemy.exc import IntegrityError
 
-from model import Session, Previsao
-from model.interacao import Interacao
+from model import Session, Previsao, Interacao
+from logger import logger
+from schemas import *
+from flask_cors import CORS
+
+info = Info(title="Wave Prediction", version="1.0.0")
+app = OpenAPI(__name__, info=info)
+CORS(app)
+
+# definindo tags
+home_tag = Tag(name="Documentação", description="Seleção de documentação: Swagger, Redoc ou RapiDoc")
+previsao_tag = Tag(name="Previsao", description="Adição, visualização e remoção de previsões à base geral")
+interacao_tag = Tag(name="Interacao", description="Adição de um comentário à uma previsão cadastrado na base")
 
 
-app = Flask(__name__)
+@app.get('/', tags=[home_tag])
+def home():
+    """Redireciona para /openapi, tela que permite a escolha do estilo de documentação.
+    """
+    return redirect('/openapi')
 
 
-@app.route('/')
-def index():
-    return render_template("index.html"), 200
+@app.post('/previsao', tags=[previsao_tag],
+          responses={"200": PrevisaoViewSchema, "409": ErrorSchema, "400": ErrorSchema})
+def add_revisao(form: PrevisaoSchema):
+    """Adiciona uma nova Previsão à base de dados
 
-
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory('static', 'favicon.ico', mimetype='image/x-icon')
-
-
-@app.route('/add_previsao', methods=['POST'])
-def add_previsao():
-    session = Session()
+    Retorna uma representação das previsões e comentários associados.
+    """
     previsao = Previsao(
-        nome_praia=request.form.get("nome_praia"),
-        ondulacao=request.form.get("ondulacao"),
-        vento=request.form.get("vento"),
-        tamanho_onda=request.form.get("tamanho_onda"),
-    )
+        nome_praia=form.nome_praia,
+        ondulacao=form.ondulacao,
+        vento=form.vento,
+        tamanho_onda=form.tamanho_onda,
+        data_previsao=form.data_previsao)
+    logger.debug(f"Adicionando a previsão do local: '{previsao.nome_praia}'")
     try:
-        # adicionando previsão
+        # criando conexão com a base
+        session = Session()
+        # adicionando previsao
         session.add(previsao)
-        # efetivando o camando de adição de nova previsão de onda na tabela
+        # efetivando o camando de adição de novo registro na tabela
         session.commit()
-        return render_template("previsao.html", previsao=previsao), 200
+        logger.debug(f"Adicionada previsão do local: '{previsao.nome_praia}'")
+        return apresenta_previsao(previsao), 200
+
     except IntegrityError as e:
-        error_msg = "Previsão já registrada na base"
-        return render_template("error.html", error_code=409, error_msg=error_msg), 409
+        # como a duplicidade do nome é a provável razão do IntegrityError
+        error_msg = "Previsão para este local já adicionada :/"
+        logger.warning(f"Erro ao adicionar previsão '{previsao.nome_praia}', {error_msg}")
+        return {"mesage": error_msg}, 409
+
     except Exception as e:
-        error_msg = "Não foi possível registrar nova previsão"
-        print(str(e))
-        return render_template("error.html", error_code=400, error_msg=error_msg), 400
+        # caso um erro fora do previsto
+        error_msg = "Não foi possível salvar novo registro :/"
+        logger.warning(f"Erro ao adicionar previsao '{previsao.nome_praia}', {error_msg}")
+        return {"mesage": error_msg}, 400
 
 
-@app.route('/get_previsao/<previsao_id>', methods=['GET'])
-def get_previsao(previsao_id):
+@app.get('/previsoes', tags=[previsao_tag],
+         responses={"200": ListagemPrevisoesSchema, "404": ErrorSchema})
+def get_previsoes():
+    """Faz a busca por todas as previsões cadastradas
+
+    Retorna uma representação da listagem de previsões recentes.
+    """
+    logger.debug(f"Coletando previsões ")
+    # criando conexão com a base
     session = Session()
-    previsao = session.query(Previsao).filter(Previsao.id == previsao_id).first()
-    if not previsao:
-        error_msg = "Previsão não registrada na base :/"
-        return render_template("error.html", error_code= 404, error_msg=error_msg), 404
+    # fazendo a busca
+    previsoes = session.query(Previsao).all()
+
+    if not previsoes:
+        # se não há previsoes cadastrados
+        return {"previsões": []}, 200
     else:
-        return render_template("previsao.html", previsao=previsao), 200
+        logger.debug(f"%d previsões econtradas" % len(previsoes))
+        # retorna a representação da previsão
+        print(previsoes)
+        return apresenta_previsoes(previsoes), 200
 
 
-@app.route('/del_previsao/<previsao_id>', methods=['DELETE'])
-def del_previsao(previsao_id):
+@app.get('/previsao', tags=[previsao_tag],
+         responses={"200": PrevisaoViewSchema, "404": ErrorSchema})
+def get_produto(query: PrevisaoBuscaSchema):
+    """Faz a busca por uma previsao a partir do id do registro
+
+    Retorna uma representação das previsões e comentários associados.
+    """
+    previsao_id = query.previsao_id
+    logger.debug(f"Coletando dados sobre produto #{previsao_id}")
+    # criando conexão com a base
     session = Session()
-    count = session.query(Previsao).filter(Previsao.id == previsao_id).delete()
-    session.commit()
-    if count ==1:
-        return render_template("deletado.html", previsao_id=previsao_id), 200
-    else: 
-        error_msg = "Previsão não registrada na base :/"
-        return render_template("error.html", error_code=404, error_msg=error_msg), 404
-
-
-@app.route('/add_interacao/<previsao_id>', methods=['POST'])
-def add_interacao(previsao_id):
-    session = Session()
+    # fazendo a busca
     previsao = session.query(Previsao).filter(Previsao.id == previsao_id).first()
+
     if not previsao:
-        error_msg = "Previsão não registrada na base :/"
-        return render_template("error.html", error_code= 404, error_msg=error_msg), 404
+        # se o produto não foi encontrado
+        error_msg = "Previsao não encontrado na base :/"
+        logger.warning(f"Erro ao buscar previsao '{previsao_id}', {error_msg}")
+        return {"mesage": error_msg}, 404
+    else:
+        logger.debug(f"Produto econtrado: '{previsao.nome_praia}'")
+        # retorna a representação de produto
+        return apresenta_previsao(previsao), 200
 
-    autor = request.form.get("autor")
-    texto = request.form.get("texto")
-    n_estrelas = request.form.get("n_estrela")
-    if n_estrelas:
-        n_estrelas = int(n_estrelas)
 
-    interacao = Interacao(autor, texto, n_estrelas)
+@app.delete('/previsao', tags=[previsao_tag],
+            responses={"200": PrevisaoDelSchema, "404": ErrorSchema})
+def del_previsao(query: PrevisaoBuscaSchema):
+    """Deleta uma previsão a partir do id informado
+
+    Retorna uma mensagem de confirmação da remoção.
+    """
+    previsao_nome = unquote(unquote(query.nome_praia))
+    print(previsao_nome)
+    logger.debug(f"Deletando dados sobre a previsão #{previsao_nome}")
+    # criando conexão com a base
+    session = Session()
+    # fazendo a remoção
+    count = session.query(Previsao).filter(Previsao.nome_praia == previsao_nome).delete()
+    session.commit()
+
+    if count:
+        # retorna a representação da mensagem de confirmação
+        logger.debug(f"Deletada previsão #{previsao_nome}")
+        return {"mesage": "Previsao removida", "id": previsao_nome}
+    else:
+        # se a previsao não foi encontrada
+        error_msg = "Previsao não encontrada na base :/"
+        logger.warning(f"Erro ao deletar previsao #'{previsao_nome}', {error_msg}")
+        return {"mesage": error_msg}, 404
+
+
+@app.post('/interacao', tags=[interacao_tag],
+          responses={"200": PrevisaoViewSchema, "404": ErrorSchema})
+def add_interacao(form: InteracaoSchema):
+    """Adiciona uma nova interação à previsão cadastrada na base identificado pelo id
+
+    Retorna uma representação das previsões e comentários associados.
+    """
+    previsao_id  = form.previsao_id
+    logger.debug(f"Adicionando interações ao produto #{previsao_id}")
+    # criando conexão com a base
+    session = Session()
+    # fazendo a busca pela previsao
+    previsao = session.query(Previsao).filter(Previsao.id == previsao_id).first()
+
+    if not previsao:
+        # se previsao não encontrada
+        error_msg = "Previsao não encontrada na base :/"
+        logger.warning(f"Erro ao adicionar interação ao produto '{previsao_id}', {error_msg}")
+        return {"mesage": error_msg}, 404
+
+    # criando a interação
+    texto = form.texto
+    interacao = Interacao(texto)
+
+    # adicionando a interacao ao produto
     previsao.adiciona_interacao(interacao)
     session.commit()
-    return render_template("previsao.html", previsao=previsao), 200
+
+    logger.debug(f"Adicionada interação ao produto #{previsao_id}")
+
+    # retorna a representação de produto
+    return apresenta_previsao(previsao), 200
