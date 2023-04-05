@@ -4,7 +4,7 @@
   --------------------------------------------------------------------------------------
 */
 const getList = async () => {
-    let url = 'http://127.0.0.1:5000/previsoes';
+    let url = 'http://127.0.0.1:5002/previsoes';
     fetch(url, {
       method: 'get',
     })
@@ -38,7 +38,7 @@ const getList = async () => {
     formData.append('vento', inputWind);
     formData.append('tamanho_onda', inputSize);
   
-    let url = 'http://127.0.0.1:5000/previsao';
+    let url = 'http://127.0.0.1:5002/previsao';
     fetch(url, {
       method: 'post',
       body: formData
@@ -93,7 +93,7 @@ const getList = async () => {
   */
   const deleteItem = (item) => {
     console.log(item)
-    let url = 'http://127.0.0.1:5000/previsao?nome=' + item;
+    let url = 'http://127.0.0.1:5002/previsao?nome=' + item;
     fetch(url, {
       method: 'delete'
     })

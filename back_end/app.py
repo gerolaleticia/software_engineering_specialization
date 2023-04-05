@@ -102,7 +102,7 @@ def get_produto(query: PrevisaoBuscaSchema):
 
     if not previsao:
         # se o produto não foi encontrado
-        error_msg = "Previsao não encontrado na base :/"
+        error_msg = "Previsao não encontrada na base :/"
         logger.warning(f"Erro ao buscar previsao '{nome_praia}', {error_msg}")
         return {"mesage": error_msg}, 404
     else:
