@@ -1,7 +1,7 @@
 body,
 ul,
 li {
-    font-family: Calibri;
+    font-family: Lucida Sans Regular;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -20,7 +20,7 @@ header {
     width: 100%;
     background-color: rgb(23, 84, 83);
     display: inline-block;
-    padding: 2px 0px;
+    padding: 0px 0px;
     position: sticky;
     top: 0px;
 }
@@ -35,9 +35,19 @@ header {
     width: 100%;
 }
 
+.abertura {
+    color: rgb(23, 84, 83);
+    background-color: rgb(130, 224, 223);
+    padding: 0px 0px;
+    font-size: 12px;
+    text-align: center;
+    position: sticky;
+    width: 100%;
+}
+
 .newItem {
     background-color: rgb(130, 224, 223);
-    padding: 30px 40px;
+    padding: 15px 0px;
     color: white;
     display: flex;
     justify-content: center;
@@ -52,7 +62,7 @@ header {
 #newPlace {
     margin: 0;
     border: 1px solid rgb(35, 32, 24);
-    width: 25%;
+    width: 20%;
     padding: 10px;
     font-size: 16px;
 }
@@ -68,7 +78,7 @@ header {
 #newSwell {
     margin: 0;
     border: 1px solid rgb(35, 32, 24);
-    width: 9%;
+    width: 10%;
     padding: 10px;
     font-size: 16px;
 }
@@ -76,7 +86,7 @@ header {
 #newWind {
     margin: 0;
     border: 1px solid rgb(35, 32, 24);
-    width: 9%;
+    width: 10%;
     padding: 10px;
     font-size: 16px;
 }
@@ -125,15 +135,16 @@ td {
     border-collapse: collapse;
     cursor: pointer;
     position: relative;
-    padding: 12px 8px 12px 10px;
+    padding: 8px 8px 8px 8px;
     font-size: 18px;
     transition: 0.2s;
     text-align: start;
+    bottom: 0px;
 }
 
 table{
     background-color: white;
-    width: 50%;
+    width: 60%;
 }
 
 tr:nth-child(odd){
@@ -141,7 +152,7 @@ tr:nth-child(odd){
 }
 
 th:nth-child(1){
-    width: 80%;
+    width: 30%;
 }
 
 tr:hover {

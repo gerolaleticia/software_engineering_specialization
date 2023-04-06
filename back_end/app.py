@@ -37,8 +37,7 @@ def add_revisao(form: PrevisaoSchema):
         nome_praia=form.nome_praia,
         ondulacao=form.ondulacao,
         vento=form.vento,
-        tamanho_onda=form.tamanho_onda,
-        data_previsao=form.data_previsao)
+        tamanho_onda=form.tamanho_onda)
     logger.debug(f"Adicionando a previsão do local: '{previsao.nome_praia}'")
     try:
         # criando conexão com a base
