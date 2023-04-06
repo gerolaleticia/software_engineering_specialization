@@ -9,3 +9,4 @@
 [2023-04-06 11:59:19,509] INFO _log() L224  127.0.0.1 - - [06/Apr/2023 11:59:19] "GET /previsoes HTTP/1.1" 200 - - call_trace=C:\Users\leticia.gerola\AppData\Local\Programs\Python\Python310\lib\site-packages\werkzeug\_internal.py L224 
 [2023-04-06 12:00:24,035] INFO _log() L224  127.0.0.1 - - [06/Apr/2023 12:00:24] "GET /previsoes HTTP/1.1" 200 - - call_trace=C:\Users\leticia.gerola\AppData\Local\Programs\Python\Python310\lib\site-packages\werkzeug\_internal.py L224 
 [2023-04-06 12:00:33,245] INFO _log() L224  127.0.0.1 - - [06/Apr/2023 12:00:33] "GET /previsoes HTTP/1.1" 200 - - call_trace=C:\Users\leticia.gerola\AppData\Local\Programs\Python\Python310\lib\site-packages\werkzeug\_internal.py L224 
+[2023-04-06 12:00:47,092] INFO _log() L224  127.0.0.1 - - [06/Apr/2023 12:00:47] "GET /previsoes HTTP/1.1" 200 - - call_trace=C:\Users\leticia.gerola\AppData\Local\Programs\Python\Python310\lib\site-packages\werkzeug\_internal.py L224 
