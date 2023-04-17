@@ -5,7 +5,6 @@ import os
 
 # importando os elementos definidos no modelo
 from model.base import Base
-from model.interacao import Interacao
 from model.previsao import Previsao
 
 db_path = "database/"

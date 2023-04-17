@@ -1,30 +1,30 @@
 /*
   --------------------------------------------------------------------------------------
-  Função para obter as previsões existentes do servidor via requisição GET
+  Função para obter a lista existente do servidor via requisição GET
   --------------------------------------------------------------------------------------
 */
 const getList = async () => {
-  let url = 'http://127.0.0.1:5002/previsoes';
+  let url = 'http://127.0.0.1:5002/produtos';
   fetch(url, {
     method: 'get',
   })
     .then((response) => response.json())
     .then((data) => {
-      data.previsoes.forEach(item => insertList(item.nome_praia, item.ondulacao, item.vento, item.tamanho_onda))
+      data.produtos.forEach(item => insertList(item.nome_praia, item.ondulacao, item.vento, item.tamanho_onda))
     })
     .catch((error) => {
       console.error('Error:', error);
     });
 }
-  
+
 /*
   --------------------------------------------------------------------------------------
   Chamada da função para carregamento inicial dos dados
   --------------------------------------------------------------------------------------
 */
 getList()
-  
-  
+
+
 /*
   --------------------------------------------------------------------------------------
   Função para colocar um item na lista do servidor via requisição POST
@@ -37,7 +37,7 @@ const postItem = async (inputPred, inputSwell, inputWind, inputSize) => {
   formData.append('vento', inputWind);
   formData.append('tamanho_onda', inputSize);
 
-  let url = 'http://127.0.0.1:5002/previsao';
+  let url = 'http://127.0.0.1:5002/produto';
   fetch(url, {
     method: 'post',
     body: formData
@@ -92,7 +92,7 @@ const removeElement = () => {
 */
 const deleteItem = (item) => {
   console.log(item)
-  let url = 'http://127.0.0.1:5002/previsao?nome=' + item;
+  let url = 'http://127.0.0.1:5002/produto?nome=' + item;
   fetch(url, {
     method: 'delete'
   })
@@ -104,7 +104,7 @@ const deleteItem = (item) => {
 
 /*
   --------------------------------------------------------------------------------------
-  Função para adicionar nova previsão com nome da praia, data, ondulação, vento e tamanho da onda 
+  Função para adicionar um novo item com nome, quantidade e valor 
   --------------------------------------------------------------------------------------
 */
 const newItem = () => {
@@ -118,13 +118,13 @@ const newItem = () => {
   } else if (isNaN(inputSize)) {
     alert("Tamanho da onda precisa ser em número!");
   } else {
-    alert("Previsão adicionada!")
     insertList(inputPred, inputSwell, inputWind, inputSize)
     postItem(inputPred, inputSwell, inputWind, inputSize)
+    alert("Previsão adicionada!")
   }
 }
-  
-  /*
+
+/*
   --------------------------------------------------------------------------------------
   Função para inserir items na lista apresentada
   --------------------------------------------------------------------------------------
@@ -139,7 +139,7 @@ const insertList = (namePred, swell, wind, size) => {
     cel.textContent = item[i];
   }
   insertButton(row.insertCell(-1))
-  document.getElementById("newPred").value = "";
+  document.getElementById("newPlace").value = "";
   document.getElementById("newSwell").value = "";
   document.getElementById("newWind").value = "";
   document.getElementById("newSize").value = "";

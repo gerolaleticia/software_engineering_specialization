@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from typing import Union
 
-from  model import Base, Interacao
+from  model import Base 
 
 
 class Previsao(Base):
@@ -40,8 +40,3 @@ class Previsao(Base):
         # se não for informada, será utilizada a data da inserção no banco
         if data_previsao:
             self.data_previsao = data_previsao
-
-    def adiciona_interacao(self, interacoes:Interacao):
-        """ Adiciona uma nova interacao à previsão litorânea
-        """
-        self.interacao.append(interacoes)

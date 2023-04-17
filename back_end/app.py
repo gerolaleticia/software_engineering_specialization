@@ -113,7 +113,7 @@ def get_produto(query: PrevisaoBuscaSchema):
 @app.delete('/previsao', tags=[previsao_tag],
             responses={"200": PrevisaoDelSchema, "404": ErrorSchema})
 def del_previsao(query: PrevisaoBuscaSchema):
-    """Deleta uma previsão a partir do id informado
+    """Deleta uma previsão a partir do nome da praia informado.
 
     Retorna uma mensagem de confirmação da remoção.
     """
