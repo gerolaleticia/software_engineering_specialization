@@ -2,8 +2,6 @@ from pydantic import BaseModel
 from typing import Optional, List
 from model.previsao import Previsao
 
-from schemas import InteracaoSchema
-
 
 class PrevisaoSchema(BaseModel):
     """ Define como uma nova previsão a ser inserida deve ser representada
@@ -45,7 +43,7 @@ def apresenta_previsoes(previsoes: List[Previsao]):
 
 
 class PrevisaoViewSchema(BaseModel):
-    """ Define como uma previsão será retornada: previsão + comentário.
+    """ Define como uma previsão será retornada: previsão + interação.
     """
     previsao_id: int = 1
     nome_praia: str = "Maresias"
@@ -53,9 +51,6 @@ class PrevisaoViewSchema(BaseModel):
     ondulacao: str = "sul"
     vento: str = "leste"
     tamanho_onda: Optional[float] 
-    total_interacoes: Optional[int] 
-    comentarios:List[InteracaoSchema]
-
 
 class PrevisaoDelSchema(BaseModel):
     """ Define como deve ser a estrutura do dado retornado após uma requisição
@@ -75,6 +70,4 @@ def apresenta_previsao(previsao: Previsao):
         "ondulacao": previsao.ondulacao,
         "vento": previsao.vento,
         "tamanho_onda": previsao.tamanho_onda,
-        "total_interacoes": len(previsao.interacoes),
-        "interacoes": [{"texto": c.texto} for c in previsao.interacoes]
     }

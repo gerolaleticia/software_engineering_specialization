@@ -4,7 +4,7 @@ from urllib.parse import unquote
 
 from sqlalchemy.exc import IntegrityError
 
-from model import Session, Previsao, Interacao
+from model import Session, Previsao
 from logger import logger
 from schemas import *
 from flask_cors import CORS
@@ -135,37 +135,3 @@ def del_previsao(query: PrevisaoBuscaSchema):
         error_msg = "Previsao não encontrada na base :/"
         logger.warning(f"Erro ao deletar previsao #'{previsao_nome}', {error_msg}")
         return {"mesage": error_msg}, 404
-
-
-@app.post('/interacao', tags=[interacao_tag],
-          responses={"200": PrevisaoViewSchema, "404": ErrorSchema})
-def add_interacao(form: InteracaoSchema):
-    """Adiciona uma nova interação à previsão cadastrada na base identificado pelo id
-
-    Retorna uma representação das previsões e comentários associados.
-    """
-    previsao_id  = form.previsao_id
-    logger.debug(f"Adicionando interações à previsão #{previsao_id}")
-    # criando conexão com a base
-    session = Session()
-    # fazendo a busca pela previsao
-    previsao = session.query(Previsao).filter(Previsao.id == previsao_id).first()
-
-    if not previsao:
-        # se previsao não encontrada
-        error_msg = "Previsao não encontrada na base :/"
-        logger.warning(f"Erro ao adicionar interação ao produto '{previsao_id}', {error_msg}")
-        return {"mesage": error_msg}, 404
-
-    # criando a interação
-    texto = form.texto
-    interacao = Interacao(texto)
-
-    # adicionando a interacao ao produto
-    previsao.adiciona_interacao(interacao)
-    session.commit()
-
-    logger.debug(f"Adicionada interação à previsão #{previsao_id}")
-
-    # retorna a representação de produto
-    return apresenta_previsao(previsao), 200
