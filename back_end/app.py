@@ -14,16 +14,15 @@ app = OpenAPI(__name__, info=info)
 CORS(app)
 
 # definindo tags
-home_tag = Tag(name="Documentação", description="Seleção de documentação: Swagger, Redoc ou RapiDoc")
+home_tag = Tag(name="Documentação", description="Seleção de documentação: Swagger")
 previsao_tag = Tag(name="Previsao", description="Adição, visualização e remoção de previsões à base geral")
-interacao_tag = Tag(name="Interacao", description="Adição de um comentário à uma previsão cadastrado na base")
 
 
 @app.get('/', tags=[home_tag])
 def home():
     """Redireciona para /openapi, tela que permite a escolha do estilo de documentação.
     """
-    return redirect('/openapi')
+    return redirect('/openapi/swagger')
 
 
 @app.post('/previsao', tags=[previsao_tag],

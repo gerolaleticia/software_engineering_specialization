@@ -18,7 +18,7 @@ class Previsao(Base):
 
     # Definição do relacionamento entre a previsão do swell e a interação com os surfistas.
 
-    interacoes = relationship("Interacao")
+    # interacoes = relationship("Interacao")
 
     def __init__(self, nome_praia:str, ondulacao:str, vento:str, 
                  tamanho_onda=float, data_previsao:Union[DateTime, None] = None):
